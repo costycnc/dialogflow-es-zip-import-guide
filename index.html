@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CostyCNC - Assistente Virtuale</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 20px;
+         background: #f5f5f5; }
+  .container { max-width: 800px; margin: 0 auto; background: white;
+               padding: 30px; border-radius: 10px;
+               box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+  h1 { color: #2c3e50; }
+  ul li { margin: 8px 0; }
+  .info { background: #e8f5e9; padding: 15px; border-radius: 8px;
+          margin-top: 20px; border-left: 4px solid #4CAF50; }
+  .warn { background: #fff3cd; padding: 15px; border-radius: 8px;
+          margin-top: 20px; border-left: 4px solid #ffc107; }
+  code { background: #eee; padding: 2px 6px; border-radius: 4px;
+         font-family: monospace; }
+  .cta { display: inline-block; background: #4CAF50; color: white;
+         padding: 12px 24px; border-radius: 6px; text-decoration: none;
+         font-weight: bold; margin: 10px 5px; }
+  .cta:hover { background: #45a049; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🤖 Assistente Virtuale CostyCNC</h1>
+
+  <p>Fai una domanda al nostro bot! È addestrato per rispondere su:</p>
+  <ul>
+    <li>✅ Conversione SVG → G-code</li>
+    <li>✅ Immagini → G-code</li>
+    <li>✅ Prezzi e spedizioni</li>
+    <li>✅ Firmware e specifiche tecniche</li>
+    <li>✅ Installazione software</li>
+    <li>✅ Contatti e tutorial</li>
+  </ul>
+
+  <h2>📚 Risorse</h2>
+  <p>
+    <a href="tutorial.html" class="cta">📖 Tutorial completo</a>
+    <a href="troubleshooting.html" class="cta" style="background:#dc3545;">🐛 Troubleshooting</a>
+  </p>
+
+  <div class="warn">
+    <strong>⚠️ Come integrare il bot nel tuo sito:</strong>
+    <ol>
+      <li>Vai su Dialogflow → <strong>Integrations</strong> → <strong>Dialogflow Messenger</strong></li>
+      <li>Clicca <strong>ENABLE</strong> per ottenere il codice</li>
+      <li>Incolla il codice nel tuo sito prima di <code>&lt;/body&gt;</code></li>
+      <li>Se hai problemi → <a href="troubleshooting.html">vedi troubleshooting</a></li>
+    </ol>
+  </div>
+
+  <div class="info">
+    <strong>💡 Codice Dialogflow Messenger:</strong>
+    <pre style="background:#2d2d2d;color:#f8f8f2;padding:15px;border-radius:6px;overflow-x:auto;"><code style="background:none;color:#f8f8f2;">&lt;script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"&gt;&lt;/script&gt;
+&lt;df-messenger
+  intent="WELCOME"
+  chat-title="CostyCNC"
+  agent-id="IL_TUO_AGENT_ID"
+  language-code="it"&gt;
+&lt;/df-messenger&gt;</code></pre>
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ Nota:</strong> l'URL vecchio <code>console.dialogflow.com/api-client/demo/embedded/...</code>
+    <strong>NON funziona più</strong>. È stato dismesso da Google.
+    Usa solo <strong>Dialogflow Messenger</strong>.
+  </div>
+
+</div>
+
+</body>
+</html>
