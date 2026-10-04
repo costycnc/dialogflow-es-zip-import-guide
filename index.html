@@ -3,12 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dialogflow ES - ZIP Import Guide | CostyCNC</title>
+<title>Dialogflow ES ZIP Import and Restore Guide | CostyCNC</title>
 
-<meta name="description" content="Complete guide to import a chatbot into Dialogflow ES. Correct ZIP format, 10 common problems and tested solutions. Born from real CostyCNC experience.">
-<meta name="keywords" content="dialogflow, dialogflow es, chatbot, zip import, troubleshooting, uuid, iam, python, costycnc">
+<meta name="description" content="How to import and restore a Dialogflow ES agent from a ZIP. Learn the correct ZIP structure, UUID and usersays filenames, JSON errors, IAM permissions, project problems, and practical fixes.">
+<meta name="keywords" content="Dialogflow ES ZIP import, Dialogflow ES restore from ZIP, Dialogflow ZIP structure, agent.json, usersays_it.json, Dialogflow UUID, Dialogflow IAM permissions, Dialogflow import errors">
 <meta name="author" content="CostyCNC">
 <meta name="language" content="en">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="theme-color" content="#2c3e50">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dialogflow ES ZIP Import and Restore Guide">
+<meta property="og:description" content="Practical guide to Dialogflow ES ZIP import and restore errors, with ZIP structure, UUIDs, usersays filenames, IAM, JSON troubleshooting and tested fixes.">
+<meta property="og:url" content="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/">
+<meta property="og:site_name" content="CostyCNC">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dialogflow ES ZIP Import and Restore Guide">
+<meta name="twitter:description" content="Practical troubleshooting guide for Dialogflow ES ZIP imports and restores.">
 
 <link rel="canonical" href="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/">
 <link rel="alternate" hreflang="it" href="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/it/">
@@ -185,31 +197,174 @@
     pre { font-size: 0.75em; padding: 15px; }
   }
 </style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/#webpage",
+      "url": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/",
+      "name": "Dialogflow ES ZIP Import and Restore Guide",
+      "description": "Practical guide to importing and restoring Dialogflow ES agents from ZIP files, including ZIP structure, UUIDs, usersays filenames, JSON errors, IAM permissions and common troubleshooting steps.",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "CostyCNC",
+        "url": "https://www.costycnc.it/"
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "Dialogflow ES",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "CostyCNC",
+        "url": "https://www.costycnc.it/"
+      },
+      "dateModified": "2026-10-04"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/#article",
+      "headline": "Dialogflow ES ZIP Import and Restore Guide",
+      "description": "A practical troubleshooting guide for creating, importing and restoring Dialogflow ES agents from ZIP files.",
+      "url": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/",
+      "inLanguage": "en",
+      "author": {
+        "@type": "Organization",
+        "name": "CostyCNC",
+        "url": "https://www.costycnc.it/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "CostyCNC",
+        "url": "https://www.costycnc.it/"
+      },
+      "dateModified": "2026-10-04",
+      "proficiencyLevel": "Beginner",
+      "dependencies": "Dialogflow ES, Google Cloud Console, Python",
+      "keywords": [
+        "Dialogflow ES ZIP import",
+        "Dialogflow ES restore from ZIP",
+        "Dialogflow ZIP structure",
+        "agent.json",
+        "usersays_it.json",
+        "Dialogflow UUID",
+        "Dialogflow IAM"
+      ],
+      "mainEntityOfPage": {
+        "@id": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "CostyCNC",
+          "item": "https://www.costycnc.it/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://www.costycnc.it/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Dialogflow ES ZIP Import Guide",
+          "item": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the correct ZIP structure for a Dialogflow ES agent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For a manually prepared Dialogflow ES agent ZIP, agent.json should be at the root of the ZIP archive, together with the other exported agent files and the intents directory. Do not add an unnecessary top-level wrapper folder."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between Import from ZIP and Restore from ZIP in Dialogflow ES?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Restore from ZIP overwrites the current agent with the supplied ZIP. Import from ZIP adds intents and entities to the current agent and replaces existing intents or entities with the same names."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the maximum Dialogflow ES agent ZIP size?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Google's current Dialogflow ES documentation states that the maximum agent size for import or restore is 50 MB of uncompressed content."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does Dialogflow ES say an intent ID must be a UUID?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When generating Dialogflow ES JSON manually, use valid UUID values for the ID fields required by the exported format. Python's uuid.uuid4() is a practical way to generate UUID values."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does Dialogflow ES report 'Nothing to import'?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A common cause is an incorrect ZIP layout. Inspect the archive and compare it with a known-good ZIP exported by Dialogflow ES. In particular, check that agent.json is at the archive root and that the expected intents files are present."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 </head>
 <body>
 
-<h1>Dialogflow ES - ZIP Import Guide</h1>
+<header>
+<h1>Dialogflow ES ZIP Import and Restore Guide</h1>
+</header>
 
 <div class="intro">
-  <strong>Complete guide to import a chatbot into Dialogflow ES.</strong>
-  The correct ZIP format, 10 common problems and field-tested solutions.
+  <strong>Practical guide to importing and restoring a Dialogflow ES agent from a ZIP file.</strong>
+  Learn the ZIP structure, required filenames, UUIDs, JSON pitfalls, IAM permissions,
+  project problems and the most common import errors.
   <br><br>
-  Born from <strong>3 days of real attempts</strong> with the
-  <a href="https://www.costycnc.it">CostyCNC</a> project. Every problem we
-  encountered, now documented so nobody else has to hit them.
+  This guide was built from <strong>3 days of real troubleshooting</strong> during the
+  <a href="https://www.costycnc.it">CostyCNC</a> chatbot project. The examples document
+  problems encountered while creating and testing the agent manually.
 </div>
 
 <h2>Why this guide exists</h2>
 
 <p>
-  The official Dialogflow ES documentation <strong>does not explain</strong>
-  how to build the importable ZIP from scratch. The errors it returns are
-  cryptic and don't tell you what is actually wrong. As a beginner you can
-  spend days stuck on the same error.
+  Google's official Dialogflow ES documentation explains how to export, import and
+  restore agents, but it does not cover many of the practical problems you can meet
+  when you manually create or repair the JSON files inside a ZIP.
+  Import errors can be surprisingly cryptic, especially when filenames, IDs,
+  ZIP layout or Google Cloud permissions are involved.
 </p>
 
 <p>
-  <strong>This guide solves exactly that.</strong>
+  <strong>This guide focuses on those practical problems.</strong>
+  When possible, compare your manually generated archive with a known-good ZIP
+  exported directly from Dialogflow ES.
 </p>
 
 <h2>What you will find here</h2>
@@ -224,16 +379,24 @@
 
 <h2>Quick Start</h2>
 
+<p>
+  <strong>Important:</strong> Dialogflow ES provides two different ZIP operations.
+  <strong>Restore from ZIP</strong> overwrites the current agent, while
+  <strong>Import from ZIP</strong> adds intents and entities and replaces existing
+  ones with the same names. Choose the operation deliberately.
+</p>
+
 <h3>1. Generate the ZIP</h3>
 <pre><code>python crea_bot.py</code></pre>
 <p>Output: <code>dialogflow-es-chatbot.zip</code></p>
 
 <h3>2. Import into Dialogflow ES</h3>
 <ol>
-  <li>Open <a href="https://dialogflow.cloud.google.com" target="_blank">dialogflow.cloud.google.com</a></li>
-  <li>Settings &rarr; Export and Import &rarr; <strong>RESTORE FROM ZIP</strong></li>
+  <li>Open <a href="https://dialogflow.cloud.google.com" target="_blank" rel="noopener">dialogflow.cloud.google.com</a></li>
+  <li>Open <strong>Settings &rarr; Export and Import</strong></li>
+  <li>Choose <strong>RESTORE FROM ZIP</strong> if you intend to replace the current agent</li>
   <li>Upload the ZIP file</li>
-  <li>Type <code>IMPORT</code> &rarr; click <strong>IMPORT</strong></li>
+  <li>Type <code>IMPORT</code> to confirm the restore</li>
 </ol>
 
 <p>If you see <strong>"Agent import successful"</strong> in green &rarr; DONE!</p>
@@ -265,7 +428,11 @@ Validate intent with display name 'goodbye' failed because of the following reas
 </div>
 
 <h3>Cause</h3>
-<p>You are using IDs like <code>intent-001</code> instead of proper <strong>UUID v4</strong>.</p>
+<p>
+  If you are generating the exported JSON format manually, an ID such as
+  <code>intent-001</code> is not a valid UUID. Use a valid UUID value for the
+  ID fields required by the format.
+</p>
 
 <h3>Solution</h3>
 <p>Replace:</p>
@@ -285,7 +452,10 @@ This file 'intents/image_to_gcode_user_says.json' can not be passed into JsonEle
 </div>
 
 <h3>Cause</h3>
-<p>The <strong>training phrases filename</strong> is wrong. Dialogflow ES is extremely picky about it.</p>
+<p>
+  The <strong>training-phrase filename</strong> does not match the exported
+  Dialogflow ES naming convention used by this example agent.
+</p>
 
 <h3>WRONG names</h3>
 <table>
@@ -314,7 +484,7 @@ com.google.apps.framework.request.BadRequestException
   <li><strong>Apostrophes</strong> not properly handled</li>
   <li><strong>Emoji</strong> in texts</li>
   <li>JSON with double commas or unbalanced brackets</li>
-  <li>File too large (over 10 MB)</li>
+  <li>Agent ZIP exceeds Google's current maximum of <strong>50 MB uncompressed</strong></li>
 </ul>
 
 <h3>Solution</h3>
@@ -322,7 +492,7 @@ com.google.apps.framework.request.BadRequestException
   <li>Open the file with <strong>Notepad++</strong></li>
   <li>Menu <strong>Encoding</strong> &rarr; <strong>UTF-8</strong> (NOT "UTF-8 BOM")</li>
   <li>Save</li>
-  <li>Validate JSON at <a href="https://jsonlint.com" target="_blank">jsonlint.com</a></li>
+  <li>Validate JSON at <a href="https://jsonlint.com" target="_blank" rel="noopener">jsonlint.com</a></li>
 </ol>
 
 <div class="fix">
@@ -380,7 +550,7 @@ com.google.apps.framework.auth.IamPermissionDeniedException: Permission 'dialogf
 <p><strong>Step 1</strong> - Find the correct Project ID:<br>
 Dialogflow &rarr; Settings &rarr; <strong>General</strong> &rarr; copy the <strong>Project ID</strong></p>
 
-<p><strong>Step 2</strong> - Go to <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></p>
+<p><strong>Step 2</strong> - Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener">Google Cloud Console</a></p>
 
 <p><strong>Step 3</strong> - Top left, click the project name and <strong>select the correct project</strong>.
 <br>If it does not appear &rarr; see <a href="#p8">Problem 8</a></p>
@@ -391,9 +561,8 @@ Dialogflow &rarr; Settings &rarr; <strong>General</strong> &rarr; copy the <stro
 
 <p><strong>Step 6</strong> - Add roles:
 <ul>
-  <li><strong>Dialogflow API Admin</strong></li>
-  <li><strong>Dialogflow Console Agent Editor</strong></li>
-  <li><strong>Editor</strong> (generic)</li>
+  <li><strong>Dialogflow API Admin</strong> (when API-level access is required)</li>
+  <li><strong>Dialogflow Console Agent Editor</strong> (for editing the agent)</li>
 </ul>
 </p>
 
@@ -410,9 +579,13 @@ The web page at https://console.dialogflow.com/api-client/demo/embedded/... migh
 </div>
 
 <h3>Cause</h3>
-<p>Google has <strong>deprecated</strong> the old "web demo" service.</p>
+<p>
+  The old embedded Web Demo URL may no longer match the current console or
+  integration workflow. Use the integration currently provided by Dialogflow ES
+  and verify the current options in the console.
+</p>
 
-<h3>Solution - Use Dialogflow Messenger</h3>
+<h3>Current alternative: Dialogflow Messenger</h3>
 
 <p><strong>Step 1</strong> - Dialogflow &rarr; <strong>Integrations</strong> &rarr; <strong>Dialogflow Messenger</strong></p>
 <p><strong>Step 2</strong> - Click <strong>ENABLE</strong> (if error &rarr; <a href="#p5">Problem 5</a>)</p>
@@ -437,20 +610,24 @@ The web page at https://console.dialogflow.com/api-client/demo/embedded/... migh
 <h3>Possible causes</h3>
 <ul>
   <li>Training phrases <strong>not imported</strong></li>
-  <li><strong>ML threshold too high</strong> (default 0.7)</li>
-  <li>Model needs to <strong>reindex</strong> (1-2 minutes)</li>
+  <li><strong>Classification threshold</strong> is too high for the phrases being tested</li>
+  <li>The agent needs to <strong>retrain</strong> after changes</li>
 </ul>
 
 <h3>Solution</h3>
 <ol>
   <li><strong>Verify training phrases:</strong> open the intent &rarr; check the phrases</li>
   <li><strong>Click SAVE</strong> in the intent &rarr; forces retraining</li>
-  <li><strong>Wait 2 minutes</strong></li>
+  <li><strong>Wait for training to complete</strong></li>
   <li><strong>Retry</strong></li>
   <li>If still failing &rarr; <strong>lower ML threshold:</strong></li>
 </ol>
 
-<p>Settings &rarr; <strong>ML Settings</strong> &rarr; <strong>Classification threshold</strong>: change from <code>0.7</code> to <code>0.4</code></p>
+<p>
+  If the intent still falls back, inspect <strong>ML Settings</strong> and the
+  <strong>Classification threshold</strong>. A lower threshold can make matching
+  more permissive, but test carefully because it can also increase false matches.
+</p>
 
 <h2 id="p8">Problem 8: Google Cloud project not showing in the list <span class="badge badge-hard">HARD</span></h2>
 
@@ -461,7 +638,7 @@ The web page at https://console.dialogflow.com/api-client/demo/embedded/... migh
 <ol>
   <li>Logged in with a <strong>different Google account</strong></li>
   <li>Project in a <strong>corporate organization</strong> not accessible</li>
-  <li>Dialogflow agent is a <strong>trial/temporary</strong> without a Cloud project</li>
+  <li>The agent is associated with a <strong>different or inaccessible Google Cloud project</strong></li>
   <li>Project name is <strong>completely different</strong> (e.g. "My First Project")</li>
 </ol>
 
@@ -478,7 +655,7 @@ If it <strong>does not appear</strong>, the agent is probably a temporary trial 
 
 <h3>Alternative - Create a new project</h3>
 <ol>
-  <li>Go to <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></li>
+  <li>Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener">Google Cloud Console</a></li>
   <li>Top &rarr; <strong>Select a project</strong> &rarr; <strong>NEW PROJECT</strong></li>
   <li>Name: <code>costycnc-chatbot</code></li>
   <li>Create</li>
@@ -490,9 +667,10 @@ If it <strong>does not appear</strong>, the agent is probably a temporary trial 
 
 <h3>Cause</h3>
 <p>
-  You ran the Python script <strong>inside</strong> a folder that is already
-  named like the agent (e.g. <code>costycnc-bot</code>). The script creates
-  the folder <code>costycnc-bot</code> &rarr; result: <code>costycnc-bot/costycnc-bot/</code>.
+  Your ZIP creation script placed the generated agent inside an unnecessary
+  wrapper folder. This can produce an archive such as
+  <code>costycnc-bot/agent.json</code> instead of putting
+  <code>agent.json</code> at the ZIP root.
 </p>
 
 <h3>Solution</h3>
@@ -513,7 +691,10 @@ Always run the script from a <strong>neutral folder</strong> that is <strong>not
 <h2 id="p10">Problem 10: IMPORT button grey/disabled <span class="badge badge-easy">EASY</span></h2>
 
 <h3>Cause</h3>
-<p>You uploaded the ZIP but did not <strong>type the confirmation</strong>. Dialogflow requires you to type the word <code>IMPORT</code> to activate the button (prevents accidental clicks).</p>
+<p>
+  In the current restore/import confirmation flow, the action may remain disabled
+  until the required confirmation text is entered.
+</p>
 
 <h3>Solution</h3>
 <ol>
@@ -533,13 +714,13 @@ Type exactly <strong>IMPORT</strong> - no spaces, no lowercase.
   <tr><td>1</td><td>All IDs are UUID v4</td><td>[ ]</td></tr>
   <tr><td>2</td><td>Training files named <code>{name}_usersays_it.json</code></td><td>[ ]</td></tr>
   <tr><td>3</td><td>No file named <code>_user_says.json</code> (without "it")</td><td>[ ]</td></tr>
-  <tr><td>4</td><td>ZIP has <strong>only one</strong> root folder</td><td>[ ]</td></tr>
-  <tr><td>5</td><td><code>agent.json</code> present in the folder</td><td>[ ]</td></tr>
+  <tr><td>4</td><td><code>agent.json</code> is at the <strong>ZIP root</strong></td><td>[ ]</td></tr>
+  <tr><td>5</td><td><code>intents/</code> and expected agent files are present</td><td>[ ]</td></tr>
   <tr><td>6</td><td>Files saved as <strong>UTF-8 without BOM</strong></td><td>[ ]</td></tr>
-  <tr><td>7</td><td>JSON validated at <a href="https://jsonlint.com" target="_blank">jsonlint.com</a></td><td>[ ]</td></tr>
-  <tr><td>8</td><td><code>type</code> field is <code>"0"</code> (string)</td><td>[ ]</td></tr>
-  <tr><td>9</td><td><code>title</code>, <code>textToSpeech</code>, <code>condition</code> fields present</td><td>[ ]</td></tr>
-  <tr><td>10</td><td>Number of files in <code>intents/</code> = 2 x number of intents</td><td>[ ]</td></tr>
+  <tr><td>7</td><td>JSON validated at <a href="https://jsonlint.com" target="_blank" rel="noopener">jsonlint.com</a></td><td>[ ]</td></tr>
+  <tr><td>8</td><td>Required JSON fields match a <strong>known-good exported agent</strong></td><td>[ ]</td></tr>
+  <tr><td>9</td><td>Training-phrase filenames match the agent language</td><td>[ ]</td></tr>
+  <tr><td>10</td><td>ZIP size is within the current <strong>50 MB uncompressed</strong> limit</td><td>[ ]</td></tr>
 </table>
 
  <h2>Extra Tips (from field experience)</h2>
@@ -597,8 +778,9 @@ Add <strong>Editor</strong> only if strictly necessary.
 
 <h3>5. Test the import on a throwaway agent first</h3>
 <p>
-  Importing a ZIP <strong>overwrites</strong> the current agent content.
-  If something is wrong, you lose the existing intents.
+  <strong>Restore from ZIP</strong> overwrites the current agent. By contrast,
+  <strong>Import from ZIP</strong> adds intents and entities and replaces ones
+  with the same names.
 </p>
 <div class="fix">
 Create a temporary empty agent, import there first, verify everything
@@ -612,7 +794,7 @@ works, then import into the real agent.
 </p>
 <div class="fix">
 If a step does not match what you see, check the
-<a href="https://cloud.google.com/dialogflow/es/docs" target="_blank">official Dialogflow ES docs</a>
+<a href="https://cloud.google.com/dialogflow/es/docs" target="_blank" rel="noopener">official Dialogflow ES docs</a>
 for recent changes before assuming the guide is wrong.
 </div>
 
@@ -628,10 +810,25 @@ Always type JSON strings manually or paste through a plain-text editor.
 Never copy from Word, Google Docs or rendered HTML.
 </div>
 
+
+<h2>Official Google references</h2>
+
+<p>
+  This guide is based on practical troubleshooting, but Dialogflow ES can change.
+  For current limits, import/restore behavior, IAM roles and integration setup,
+  always check Google's documentation as well.
+</p>
+
+<ul>
+  <li><a href="https://cloud.google.com/dialogflow/es/docs/agents-settings" target="_blank" rel="noopener">Dialogflow ES Agent settings — Export and import</a></li>
+  <li><a href="https://cloud.google.com/dialogflow/es/docs/access-control" target="_blank" rel="noopener">Dialogflow ES access control and IAM roles</a></li>
+  <li><a href="https://cloud.google.com/dialogflow/es/docs/integrations/dialogflow-messenger" target="_blank" rel="noopener">Dialogflow Messenger</a></li>
+</ul>
+
 <h2>Need more help?</h2>
 
 <p>
-  <a href="https://github.com/YOUR_USERNAME/dialogflow-es-zip-import-guide" class="cta" target="_blank">
+  <a href="https://github.com/costycnc/dialogflow-es-zip-import-guide" class="cta" target="_blank">
     View on GitHub
   </a>
   <a href="https://www.costycnc.it" class="cta cta-secondary">
@@ -641,11 +838,11 @@ Never copy from Word, Google Docs or rendered HTML.
 
 <footer>
   <p>
-    <strong>Dialogflow ES ZIP Import Guide</strong><br>
+    <strong>Dialogflow ES ZIP Import and Restore Guide</strong><br>
     Born from real experience with <a href="https://www.costycnc.it">CostyCNC</a>.<br>
     Licensed under MIT. Free for personal and commercial use.
   </p>
-  <p>Last updated: 2026</p>
+  <p>Last updated: October 4, 2026</p>
 </footer>
 
 </body>
