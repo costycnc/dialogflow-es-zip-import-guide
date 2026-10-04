@@ -1,121 +1,115 @@
-# CostyCNC Chatbot - Dialogflow ES
+# Dialogflow ES - ZIP Import Guide
 
-Chatbot di assistenza per [CostyCNC](https://www.costycnc.it) costruito con **Dialogflow ES**.
+**Complete guide to import a chatbot into Dialogflow ES**, with the correct
+ZIP format, common errors and field-tested solutions.
 
-## ATTENZIONE - Leggi prima questo
+Born from **3 days of real attempts** with the [CostyCNC](https://www.costycnc.it) project —
+every problem we encountered, now documented so nobody else has to hit them.
 
-Questo repository nasce da **mesi di tentativi ed errori** con Dialogflow ES.
-Il formato di importazione ZIP **non e documentato ufficialmente** e ci sono
-molte "trappole" che possono bloccarti per giorni.
+## Why this guide
 
-Se stai cercando di importare un bot in Dialogflow ES e ti da errore,
-leggi prima **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**.
+The official Dialogflow ES documentation **does not explain** how to build
+the ZIP from scratch. The errors it returns are cryptic and don't say what
+is wrong. Anyone trying to do this as a beginner spends days on it.
+
+**This guide solves exactly that.**
+
+## What you will find here
+
+- **Exact** format of the importable ZIP
+- **10 common problems** with tested solutions
+- **Python script** that generates the ZIP automatically
+- **Ready example chatbot** (CostyCNC) to start from
+- **Step-by-step tutorial** for beginners
 
 ## Quick Start
 
-### Prerequisiti
-- Python 3.8+
-- Account Google
-- 30 minuti
-
-### 1. Genera lo ZIP importabile
+### 1. Generate the ZIP
 
     python crea_bot.py
 
-Output: `costycnc-bot.zip`
+Output: `dialogflow-es-chatbot.zip`
 
-### 2. Importa in Dialogflow
+### 2. Import into Dialogflow ES
 
-1. Apri [dialogflow.cloud.google.com](https://dialogflow.cloud.google.com)
-2. Crea un nuovo agent (o apri il tuo)
-3. Settings -> Export and Import -> **RESTORE FROM ZIP**
-4. Carica `costycnc-bot.zip`
-5. Digita `IMPORT` -> clicca **IMPORT**
+1. Open [dialogflow.cloud.google.com](https://dialogflow.cloud.google.com)
+2. Settings -> Export and Import -> **RESTORE FROM ZIP**
+3. Upload the ZIP file
+4. Type `IMPORT` -> click **IMPORT**
 
-Se vedi **"Agent import successful"** in verde -> FATTO!
+If you see **"Agent import successful"** in green -> DONE!
 
-### 3. Testa
+### 3. Test the bot
 
-Nel pannello destro **"Try it now"**:
+In the right panel **"Try it now"**:
 
-    ciao
-    come converto svg in gcode
-    quanto costa
-    firmware
+    hello
+    how do I convert svg to gcode
+    how much does it cost
 
-### 4. Integra nel sito
+## The 10 problems solved
 
-Vedi **[TUTORIAL.md](TUTORIAL.md)** -> sezione "Integrazione web"
+| # | Problem | Symptom |
+|---|---------|---------|
+| 1 | Invalid UUID | `'intent-017' is not a valid intent ID` |
+| 2 | Wrong filename | `can not be passed into JsonElement` |
+| 3 | Malformed JSON | `BadRequestException` |
+| 4 | Nested folder | `Nothing to import` |
+| 5 | IAM permissions | `Permission 'dialogflow.agents.get' not granted` |
+| 6 | Deprecated URL | Old URL `api-client/demo/embedded` |
+| 7 | Bot always Fallback | Training phrases not imported |
+| 8 | Project missing | Project ID not visible in the list |
+| 9 | Nested folder | Script run in wrong folder |
+| 10 | IMPORT button grey | Missing confirmation text |
 
-## Struttura progetto
+Full details in **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
 
-| File | Descrizione |
-|------|-------------|
-| `crea_bot.py` | Script Python che genera lo ZIP |
-| `TUTORIAL.md` | Tutorial passo-passo per principianti |
-| `TROUBLESHOOTING.md` | 10 problemi comuni e soluzioni |
-| `LICENSE` | Licenza MIT |
+## Correct ZIP format - Golden rules
 
-## Problemi comuni (sintesi)
-
-| Errore | Soluzione |
-|--------|-----------|
-| `'X' is not a valid intent ID. Must be a UUID` | Usa `str(uuid.uuid4())` |
-| `can not be passed into JsonElement` | Nome file deve essere `{name}_usersays_it.json` |
-| `BadRequestException` | JSON malformato o BOM presente |
-| `Nothing to import` | Cartella doppia o manca `agent.json` |
-| `Permission 'dialogflow.agents.get' not granted` | Progetto Google Cloud sbagliato |
-| URL `console.dialogflow.com/api-client/demo/embedded/...` non funziona | URL dismesso, usa Dialogflow Messenger |
-
-Vedi **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** per i dettagli.
-
-## Formato ZIP di Dialogflow ES - Regole d'oro
-
-    costycnc-bot.zip
+    dialogflow-es-chatbot.zip
     +-- costycnc-bot/
         +-- agent.json
         +-- package.json
         +-- intents/
             +-- {name}.json
-            +-- {name}_usersays_it.json
+            +-- {name}_usersays_it.json      <- EXACT NAME!
 
-| Regola | Corretto | SBAGLIATO |
-|--------|----------|-----------|
-| Nome file training | `{name}_usersays_it.json` | `{name}_user_says.json` |
-| ID intent | UUID v4 | `intent-001` |
-| Campo `type` | `"0"` (stringa) | `0` (numero) |
-| Encoding | UTF-8 senza BOM | UTF-8-BOM |
-| Cartella doppia | Mai | `bot/bot/` |
+| Rule | Correct | WRONG |
+|------|---------|-------|
+| Training file name | `{name}_usersays_it.json` | `{name}_user_says.json` |
+| Intent ID | UUID v4 | `intent-001` |
+| Type field | `"0"` (string) | `0` (number) |
+| Encoding | UTF-8 without BOM | UTF-8-BOM |
+| Root folder | Only one | `bot/bot/` |
 
-## Integrazione web
+## Project structure
 
-**Requisito:** Devi avere un **progetto Google Cloud** collegato all'agent.
+| File | Description |
+|------|-------------|
+| `crea_bot.py` | Python script that generates the ZIP |
+| `TUTORIAL.md` | Step-by-step tutorial |
+| `TROUBLESHOOTING.md` | 10 problems + solutions |
+| `LICENSE` | MIT |
+| `ABOUT.md` | GitHub metadata |
 
-    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-    <df-messenger
-      intent="WELCOME"
-      chat-title="CostyCNC"
-      agent-id="IL_TUO_AGENT_ID"
-      language-code="it">
-    </df-messenger>
+## Who this is for
 
-ATTENZIONE: `agent-id` **NON e il Project ID**! E un UUID tipo `9378968c-5941-48e8-95e1-8014f7fa02f5`.
+- **Beginner developers** trying Dialogflow ES for the first time
+- **Anyone who has banged their head** against "can not be passed into JsonElement"
+- **Anyone who wants to understand** how the Dialogflow ZIP format works
+- **Anyone looking for a working chatbot** as a starting point
 
-## Risorse
+## Resources
 
 - [Dialogflow ES Docs](https://cloud.google.com/dialogflow/es/docs)
 - [Dialogflow Console](https://dialogflow.cloud.google.com)
 - [CostyCNC](https://www.costycnc.it)
 
-## Licenza
+## License
 
-MIT - vedi [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).
 
-## Crediti
+## Credits
 
-Creato con l'esperienza reale di [CostyCNC](https://www.costycnc.it).
-
----
-
-**Nota:** Dialogflow ES e in fase di dismissione lenta. Per nuovi progetti
-considera Dialogflow CX.
+Born from the real experience of [CostyCNC](https://www.costycnc.it).
+If you too have fought with the Dialogflow ZIP format, this repo is for you.

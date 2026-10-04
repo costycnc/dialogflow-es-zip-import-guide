@@ -1,78 +1,566 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CostyCNC - Assistente Virtuale</title>
+<title>Dialogflow ES - ZIP Import Guide | CostyCNC</title>
+
+<meta name="description" content="Complete guide to import a chatbot into Dialogflow ES. Correct ZIP format, 10 common problems and tested solutions. Born from real CostyCNC experience.">
+<meta name="keywords" content="dialogflow, dialogflow es, chatbot, zip import, troubleshooting, uuid, iam, python, costycnc">
+<meta name="author" content="CostyCNC">
+<meta name="language" content="en">
+
+<link rel="canonical" href="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/">
+<link rel="alternate" hreflang="it" href="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/it/">
+<link rel="alternate" hreflang="en" href="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/">
+<link rel="alternate" hreflang="x-default" href="https://www.costycnc.it/tools/dialogflow-es-zip-import-guide/">
+
 <style>
-  body { font-family: Arial, sans-serif; margin: 0; padding: 20px;
-         background: #f5f5f5; }
-  .container { max-width: 800px; margin: 0 auto; background: white;
-               padding: 30px; border-radius: 10px;
-               box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-  h1 { color: #2c3e50; }
-  ul li { margin: 8px 0; }
-  .info { background: #e8f5e9; padding: 15px; border-radius: 8px;
-          margin-top: 20px; border-left: 4px solid #4CAF50; }
-  .warn { background: #fff3cd; padding: 15px; border-radius: 8px;
-          margin-top: 20px; border-left: 4px solid #ffc107; }
-  code { background: #eee; padding: 2px 6px; border-radius: 4px;
-         font-family: monospace; }
-  .cta { display: inline-block; background: #4CAF50; color: white;
-         padding: 12px 24px; border-radius: 6px; text-decoration: none;
-         font-weight: bold; margin: 10px 5px; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.7;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: #333;
+    background: #fafafa;
+  }
+  h1 {
+    color: #2c3e50;
+    border-bottom: 3px solid #4CAF50;
+    padding-bottom: 15px;
+    font-size: 2em;
+  }
+  h2 {
+    color: #c0392b;
+    margin-top: 50px;
+    padding: 15px 20px;
+    background: #fdecea;
+    border-left: 4px solid #dc3545;
+    border-radius: 4px;
+  }
+  h3 { color: #555; margin-top: 30px; }
+  p { margin: 15px 0; }
+  code {
+    background: #f4f4f4;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: "Courier New", monospace;
+    color: #c7254e;
+    font-size: 0.9em;
+  }
+  pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+  pre code {
+    background: none;
+    color: #f8f8f2;
+    padding: 0;
+  }
+  .intro {
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #4CAF50;
+    margin: 20px 0;
+  }
+  .error {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+  .error::before {
+    content: "ERROR: ";
+    font-weight: bold;
+  }
+  .fix {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 15px 0;
+  }
+  .fix::before {
+    content: "SOLUTION: ";
+    font-weight: bold;
+  }
+  .warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 20px 0;
+  }
+  .warning::before {
+    content: "WARNING: ";
+    font-weight: bold;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    background: white;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  th {
+    background: #4CAF50;
+    color: white;
+  }
+  tr:nth-child(even) { background: #f9f9f9; }
+  .toc {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin: 30px 0;
+  }
+  .toc h3 { margin-top: 0; }
+  .toc a {
+    display: block;
+    padding: 8px 0;
+    color: #2196F3;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+  }
+  .toc a:hover {
+    background: #f5f5f5;
+    padding-left: 10px;
+    transition: 0.2s;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-left: 8px;
+    color: white;
+  }
+  .badge-easy { background: #28a745; }
+  .badge-medium { background: #ffc107; color: #333; }
+  .badge-hard { background: #dc3545; }
+  .cta {
+    display: inline-block;
+    background: #4CAF50;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 10px 5px;
+    font-size: 1.05em;
+  }
   .cta:hover { background: #45a049; }
+  .cta-secondary { background: #2196F3; }
+  .cta-secondary:hover { background: #1976D2; }
+  footer {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 2px solid #ddd;
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 15px; }
+    h1 { font-size: 1.5em; }
+    pre { font-size: 0.75em; padding: 15px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>🤖 Assistente Virtuale CostyCNC</h1>
+<h1>Dialogflow ES - ZIP Import Guide</h1>
 
-  <p>Fai una domanda al nostro bot! È addestrato per rispondere su:</p>
-  <ul>
-    <li>✅ Conversione SVG → G-code</li>
-    <li>✅ Immagini → G-code</li>
-    <li>✅ Prezzi e spedizioni</li>
-    <li>✅ Firmware e specifiche tecniche</li>
-    <li>✅ Installazione software</li>
-    <li>✅ Contatti e tutorial</li>
-  </ul>
+<div class="intro">
+  <strong>Complete guide to import a chatbot into Dialogflow ES.</strong>
+  The correct ZIP format, 10 common problems and field-tested solutions.
+  <br><br>
+  Born from <strong>3 days of real attempts</strong> with the
+  <a href="https://www.costycnc.it">CostyCNC</a> project. Every problem we
+  encountered, now documented so nobody else has to hit them.
+</div>
 
-  <h2>📚 Risorse</h2>
-  <p>
-    <a href="tutorial.html" class="cta">📖 Tutorial completo</a>
-    <a href="troubleshooting.html" class="cta" style="background:#dc3545;">🐛 Troubleshooting</a>
-  </p>
+<h2>Why this guide exists</h2>
 
-  <div class="warn">
-    <strong>⚠️ Come integrare il bot nel tuo sito:</strong>
-    <ol>
-      <li>Vai su Dialogflow → <strong>Integrations</strong> → <strong>Dialogflow Messenger</strong></li>
-      <li>Clicca <strong>ENABLE</strong> per ottenere il codice</li>
-      <li>Incolla il codice nel tuo sito prima di <code>&lt;/body&gt;</code></li>
-      <li>Se hai problemi → <a href="troubleshooting.html">vedi troubleshooting</a></li>
-    </ol>
-  </div>
+<p>
+  The official Dialogflow ES documentation <strong>does not explain</strong>
+  how to build the importable ZIP from scratch. The errors it returns are
+  cryptic and don't tell you what is actually wrong. As a beginner you can
+  spend days stuck on the same error.
+</p>
 
-  <div class="info">
-    <strong>💡 Codice Dialogflow Messenger:</strong>
-    <pre style="background:#2d2d2d;color:#f8f8f2;padding:15px;border-radius:6px;overflow-x:auto;"><code style="background:none;color:#f8f8f2;">&lt;script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"&gt;&lt;/script&gt;
+<p>
+  <strong>This guide solves exactly that.</strong>
+</p>
+
+<h2>What you will find here</h2>
+
+<ul>
+  <li>The <strong>exact format</strong> of the importable ZIP</li>
+  <li><strong>10 common problems</strong> with tested solutions</li>
+  <li>A <strong>Python script</strong> that generates the ZIP automatically</li>
+  <li>A <strong>ready example chatbot</strong> (CostyCNC) to start from</li>
+  <li>A <strong>step-by-step tutorial</strong> for beginners</li>
+</ul>
+
+<h2>Quick Start</h2>
+
+<h3>1. Generate the ZIP</h3>
+<pre><code>python crea_bot.py</code></pre>
+<p>Output: <code>dialogflow-es-chatbot.zip</code></p>
+
+<h3>2. Import into Dialogflow ES</h3>
+<ol>
+  <li>Open <a href="https://dialogflow.cloud.google.com" target="_blank">dialogflow.cloud.google.com</a></li>
+  <li>Settings &rarr; Export and Import &rarr; <strong>RESTORE FROM ZIP</strong></li>
+  <li>Upload the ZIP file</li>
+  <li>Type <code>IMPORT</code> &rarr; click <strong>IMPORT</strong></li>
+</ol>
+
+<p>If you see <strong>"Agent import successful"</strong> in green &rarr; DONE!</p>
+
+<h3>3. Test the bot</h3>
+<p>In the right panel <strong>"Try it now"</strong>:</p>
+<pre><code>hello
+how do I convert svg to gcode
+how much does it cost</code></pre>
+
+<div class="toc">
+  <h3>The 10 problems solved</h3>
+  <a href="#p1">1. <code>'X' is not a valid intent ID. Must be a UUID</code> <span class="badge badge-easy">EASY</span></a>
+  <a href="#p2">2. <code>can not be passed into JsonElement</code> <span class="badge badge-medium">MEDIUM</span></a>
+  <a href="#p3">3. <code>BadRequestException</code> during import <span class="badge badge-medium">MEDIUM</span></a>
+  <a href="#p4">4. <code>Nothing to import</code> - ZIP not read <span class="badge badge-easy">EASY</span></a>
+  <a href="#p5">5. <code>Permission 'dialogflow.agents.get' not granted</code> <span class="badge badge-hard">HARD</span></a>
+  <a href="#p6">6. Old URL <code>console.dialogflow.com/api-client/demo/embedded</code> no longer works <span class="badge badge-easy">EASY</span></a>
+  <a href="#p7">7. Bot always replies with Fallback <span class="badge badge-medium">MEDIUM</span></a>
+  <a href="#p8">8. Google Cloud project not showing in the list <span class="badge badge-hard">HARD</span></a>
+  <a href="#p9">9. Nested folder inside the ZIP <span class="badge badge-easy">EASY</span></a>
+  <a href="#p10">10. IMPORT button grey/disabled <span class="badge badge-easy">EASY</span></a>
+</div>
+
+<h2 id="p1">Problem 1: <code>'X' is not a valid intent ID. Must be a UUID</code> <span class="badge badge-easy">EASY</span></h2>
+
+<div class="error">
+Validate intent with display name 'goodbye' failed because of the following reasons: 'intent-017' is not a valid intent ID. Must be a UUID.
+</div>
+
+<h3>Cause</h3>
+<p>You are using IDs like <code>intent-001</code> instead of proper <strong>UUID v4</strong>.</p>
+
+<h3>Solution</h3>
+<p>Replace:</p>
+<pre><code>"id": f"intent-{counter:03d}",   # WRONG</code></pre>
+<p>with:</p>
+<pre><code>import uuid
+"id": str(uuid.uuid4()),         # CORRECT</code></pre>
+
+<div class="fix">
+Every <code>id</code> (intent, training phrase, response) must be generated with <code>str(uuid.uuid4())</code>.
+</div>
+
+<h2 id="p2">Problem 2: <code>can not be passed into JsonElement</code> <span class="badge badge-medium">MEDIUM</span></h2>
+
+<div class="error">
+This file 'intents/image_to_gcode_user_says.json' can not be passed into JsonElement. Check if this is in valid json format.
+</div>
+
+<h3>Cause</h3>
+<p>The <strong>training phrases filename</strong> is wrong. Dialogflow ES is extremely picky about it.</p>
+
+<h3>WRONG names</h3>
+<table>
+  <tr><th>Filename</th><th>Why it's wrong</th></tr>
+  <tr><td><code>image_to_gcode_user_says.json</code></td><td>"user_says" (singular, no "it")</td></tr>
+  <tr><td><code>image_to_gcode_usersays.json</code></td><td>Missing "_it" suffix</td></tr>
+  <tr><td><code>image_to_gcode_user_says_it.json</code></td><td>"user_says" instead of "usersays"</td></tr>
+</table>
+
+<h3>CORRECT name</h3>
+<pre><code>{intent_name}_usersays_it.json</code></pre>
+
+<div class="fix">
+Must be all attached: <strong>usersays</strong> (plural, no underscore) + <strong>_it</strong> (language).
+</div>
+
+<h2 id="p3">Problem 3: <code>BadRequestException</code> during import <span class="badge badge-medium">MEDIUM</span></h2>
+
+<div class="error">
+com.google.apps.framework.request.BadRequestException
+</div>
+
+<h3>Possible causes</h3>
+<ul>
+  <li><strong>UTF-8 BOM</strong> at the beginning of the file (invisible character)</li>
+  <li><strong>Apostrophes</strong> not properly handled</li>
+  <li><strong>Emoji</strong> in texts</li>
+  <li>JSON with double commas or unbalanced brackets</li>
+  <li>File too large (over 10 MB)</li>
+</ul>
+
+<h3>Solution</h3>
+<ol>
+  <li>Open the file with <strong>Notepad++</strong></li>
+  <li>Menu <strong>Encoding</strong> &rarr; <strong>UTF-8</strong> (NOT "UTF-8 BOM")</li>
+  <li>Save</li>
+  <li>Validate JSON at <a href="https://jsonlint.com" target="_blank">jsonlint.com</a></li>
+</ol>
+
+<div class="fix">
+Always save files as <strong>UTF-8 without BOM</strong>.
+</div>
+
+<h2 id="p4">Problem 4: <code>Nothing to import</code> <span class="badge badge-easy">EASY</span></h2>
+
+<h3>Causes</h3>
+<ul>
+  <li>Nested folder inside the ZIP (e.g. <code>costycnc-bot/costycnc-bot/</code>)</li>
+  <li>Missing <code>agent.json</code> in the root</li>
+  <li>Missing <code>intents/</code> folder</li>
+</ul>
+
+<h3>Correct structure</h3>
+<pre><code>dialogflow-es-chatbot.zip
++-- costycnc-bot/         &lt;- ONLY ONE folder
+    +-- agent.json
+    +-- package.json
+    +-- intents/
+        +-- greeting.json
+        +-- greeting_usersays_it.json</code></pre>
+
+<h3>WRONG structure</h3>
+<pre><code>dialogflow-es-chatbot.zip
++-- costycnc-bot/
+    +-- costycnc-bot/     &lt;- NESTED!
+        +-- agent.json
+        +-- intents/</code></pre>
+
+<div class="fix">
+Zip <strong>the folder</strong>, not its content. The result must have <code>agent.json</code> in a subfolder, not in the ZIP root.
+</div>
+
+<h2 id="p5">Problem 5: <code>Permission 'dialogflow.agents.get' not granted</code> <span class="badge badge-hard">HARD</span></h2>
+
+<div class="error">
+com.google.apps.framework.auth.IamPermissionDeniedException: Permission 'dialogflow.agents.get' not granted to cloud-ml-dialogflow-frontend@prod.google.com, because no ALLOW or ALLOW_WITH_LOG rule includes that permission.
+</div>
+
+<h3>Cause</h3>
+<p>
+  You are trying to enable an integration (e.g. Dialogflow Messenger) but
+  your account <strong>does not have the necessary IAM permissions</strong>
+  on the Google Cloud project.
+</p>
+<p>
+  <strong>OR you are working in the WRONG Google Cloud project!</strong>
+  This is the most common cause.
+</p>
+
+<h3>Step-by-step solution</h3>
+
+<p><strong>Step 1</strong> - Find the correct Project ID:<br>
+Dialogflow &rarr; Settings &rarr; <strong>General</strong> &rarr; copy the <strong>Project ID</strong></p>
+
+<p><strong>Step 2</strong> - Go to <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></p>
+
+<p><strong>Step 3</strong> - Top left, click the project name and <strong>select the correct project</strong>.
+<br>If it does not appear &rarr; see <a href="#p8">Problem 8</a></p>
+
+<p><strong>Step 4</strong> - Menu &rarr; <strong>IAM &amp; Admin</strong> &rarr; <strong>IAM</strong></p>
+
+<p><strong>Step 5</strong> - Find your <strong>email address</strong> in the list &rarr; click the pencil icon</p>
+
+<p><strong>Step 6</strong> - Add roles:
+<ul>
+  <li><strong>Dialogflow API Admin</strong></li>
+  <li><strong>Dialogflow Console Agent Editor</strong></li>
+  <li><strong>Editor</strong> (generic)</li>
+</ul>
+</p>
+
+<p><strong>Step 7</strong> - <strong>SAVE</strong> &rarr; back to Dialogflow &rarr; reload &rarr; retry</p>
+
+<div class="fix">
+After adding IAM permissions, the <strong>ENABLE</strong> button becomes clickable.
+</div>
+
+<h2 id="p6">Problem 6: Old URL <code>console.dialogflow.com/api-client/demo/embedded</code> no longer works <span class="badge badge-easy">EASY</span></h2>
+
+<div class="error">
+The web page at https://console.dialogflow.com/api-client/demo/embedded/... might be temporarily down or it may have moved permanently to a new web address.
+</div>
+
+<h3>Cause</h3>
+<p>Google has <strong>deprecated</strong> the old "web demo" service.</p>
+
+<h3>Solution - Use Dialogflow Messenger</h3>
+
+<p><strong>Step 1</strong> - Dialogflow &rarr; <strong>Integrations</strong> &rarr; <strong>Dialogflow Messenger</strong></p>
+<p><strong>Step 2</strong> - Click <strong>ENABLE</strong> (if error &rarr; <a href="#p5">Problem 5</a>)</p>
+<p><strong>Step 3</strong> - Copy the generated code:</p>
+
+<pre><code>&lt;script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"&gt;&lt;/script&gt;
 &lt;df-messenger
   intent="WELCOME"
   chat-title="CostyCNC"
-  agent-id="IL_TUO_AGENT_ID"
-  language-code="it"&gt;
+  agent-id="YOUR_AGENT_ID"
+  language-code="en"&gt;
 &lt;/df-messenger&gt;</code></pre>
-  </div>
 
-  <div class="warn">
-    <strong>⚠️ Nota:</strong> l'URL vecchio <code>console.dialogflow.com/api-client/demo/embedded/...</code>
-    <strong>NON funziona più</strong>. È stato dismesso da Google.
-    Usa solo <strong>Dialogflow Messenger</strong>.
-  </div>
-
+<div class="warning">
+<strong>Do NOT confuse <code>agent-id</code> with Project ID!</strong><br>
+- <code>agent-id</code> = UUID like <code>9378968c-5941-48e8-95e1-8014f7fa02f5</code><br>
+- <code>Project ID</code> = string like <code>costycnc-bot-lxxc</code>
 </div>
+
+<h2 id="p7">Problem 7: Bot always replies with Fallback <span class="badge badge-medium">MEDIUM</span></h2>
+
+<h3>Possible causes</h3>
+<ul>
+  <li>Training phrases <strong>not imported</strong></li>
+  <li><strong>ML threshold too high</strong> (default 0.7)</li>
+  <li>Model needs to <strong>reindex</strong> (1-2 minutes)</li>
+</ul>
+
+<h3>Solution</h3>
+<ol>
+  <li><strong>Verify training phrases:</strong> open the intent &rarr; check the phrases</li>
+  <li><strong>Click SAVE</strong> in the intent &rarr; forces retraining</li>
+  <li><strong>Wait 2 minutes</strong></li>
+  <li><strong>Retry</strong></li>
+  <li>If still failing &rarr; <strong>lower ML threshold:</strong></li>
+</ol>
+
+<p>Settings &rarr; <strong>ML Settings</strong> &rarr; <strong>Classification threshold</strong>: change from <code>0.7</code> to <code>0.4</code></p>
+
+<h2 id="p8">Problem 8: Google Cloud project not showing in the list <span class="badge badge-hard">HARD</span></h2>
+
+<h3>Symptom</h3>
+<p>In the "Select a project" screen I cannot see the <code>costycnc-bot</code> project.</p>
+
+<h3>Possible causes</h3>
+<ol>
+  <li>Logged in with a <strong>different Google account</strong></li>
+  <li>Project in a <strong>corporate organization</strong> not accessible</li>
+  <li>Dialogflow agent is a <strong>trial/temporary</strong> without a Cloud project</li>
+  <li>Project name is <strong>completely different</strong> (e.g. "My First Project")</li>
+</ol>
+
+<h3>Solution</h3>
+
+<p><strong>Check 1</strong> - Verify the account is the same in Dialogflow and Cloud Console</p>
+<p><strong>Check 2</strong> - Find the real Project ID: Dialogflow &rarr; Settings &rarr; <strong>General</strong></p>
+<p><strong>Check 3</strong> - Search by ID in the "Select project" screen</p>
+
+<div class="fix">
+If the project <strong>really exists</strong>, it will appear when searching by ID even if the name is different.<br>
+If it <strong>does not appear</strong>, the agent is probably a temporary trial &rarr; you need to create a new agent in a real Cloud project.
+</div>
+
+<h3>Alternative - Create a new project</h3>
+<ol>
+  <li>Go to <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></li>
+  <li>Top &rarr; <strong>Select a project</strong> &rarr; <strong>NEW PROJECT</strong></li>
+  <li>Name: <code>costycnc-chatbot</code></li>
+  <li>Create</li>
+  <li>Back to Dialogflow &rarr; create a new agent selecting this project</li>
+  <li>Reimport the ZIP</li>
+</ol>
+
+<h2 id="p9">Problem 9: Nested folder inside the ZIP <span class="badge badge-easy">EASY</span></h2>
+
+<h3>Cause</h3>
+<p>
+  You ran the Python script <strong>inside</strong> a folder that is already
+  named like the agent (e.g. <code>costycnc-bot</code>). The script creates
+  the folder <code>costycnc-bot</code> &rarr; result: <code>costycnc-bot/costycnc-bot/</code>.
+</p>
+
+<h3>Solution</h3>
+<pre><code># WRONG: run inside costycnc-bot/
+cd costycnc-bot/
+python crea_bot.py
+# -> creates costycnc-bot/costycnc-bot/
+
+# CORRECT: run from a neutral folder
+cd /Desktop/work/
+python crea_bot.py
+# -> creates work/costycnc-bot/</code></pre>
+
+<div class="fix">
+Always run the script from a <strong>neutral folder</strong> that is <strong>not named like the agent</strong>.
+</div>
+
+<h2 id="p10">Problem 10: IMPORT button grey/disabled <span class="badge badge-easy">EASY</span></h2>
+
+<h3>Cause</h3>
+<p>You uploaded the ZIP but did not <strong>type the confirmation</strong>. Dialogflow requires you to type the word <code>IMPORT</code> to activate the button (prevents accidental clicks).</p>
+
+<h3>Solution</h3>
+<ol>
+  <li>In the text field type: <code>IMPORT</code> (all caps)</li>
+  <li>The <strong>IMPORT</strong> button becomes blue/clickable</li>
+  <li>Click it</li>
+</ol>
+
+<div class="fix">
+Type exactly <strong>IMPORT</strong> - no spaces, no lowercase.
+</div>
+
+<h2>Final checklist before import</h2>
+
+<table>
+  <tr><th>#</th><th>Check</th><th>OK?</th></tr>
+  <tr><td>1</td><td>All IDs are UUID v4</td><td>[ ]</td></tr>
+  <tr><td>2</td><td>Training files named <code>{name}_usersays_it.json</code></td><td>[ ]</td></tr>
+  <tr><td>3</td><td>No file named <code>_user_says.json</code> (without "it")</td><td>[ ]</td></tr>
+  <tr><td>4</td><td>ZIP has <strong>only one</strong> root folder</td><td>[ ]</td></tr>
+  <tr><td>5</td><td><code>agent.json</code> present in the folder</td><td>[ ]</td></tr>
+  <tr><td>6</td><td>Files saved as <strong>UTF-8 without BOM</strong></td><td>[ ]</td></tr>
+  <tr><td>7</td><td>JSON validated at <a href="https://jsonlint.com" target="_blank">jsonlint.com</a></td><td>[ ]</td></tr>
+  <tr><td>8</td><td><code>type</code> field is <code>"0"</code> (string)</td><td>[ ]</td></tr>
+  <tr><td>9</td><td><code>title</code>, <code>textToSpeech</code>, <code>condition</code> fields present</td><td>[ ]</td></tr>
+  <tr><td>10</td><td>Number of files in <code>intents/</code> = 2 x number of intents</td><td>[ ]</td></tr>
+</table>
+
+<h2>Need more help?</h2>
+
+<p>
+  <a href="https://github.com/YOUR_USERNAME/dialogflow-es-zip-import-guide" class="cta" target="_blank">
+    View on GitHub
+  </a>
+  <a href="https://www.costycnc.it" class="cta cta-secondary">
+    CostyCNC website
+  </a>
+</p>
+
+<footer>
+  <p>
+    <strong>Dialogflow ES ZIP Import Guide</strong><br>
+    Born from real experience with <a href="https://www.costycnc.it">CostyCNC</a>.<br>
+    Licensed under MIT. Free for personal and commercial use.
+  </p>
+  <p>Last updated: 2026</p>
+</footer>
 
 </body>
 </html>

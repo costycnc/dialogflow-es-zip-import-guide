@@ -1,112 +1,112 @@
 # Dialogflow ES - Troubleshooting
 
-Tutti i problemi che abbiamo incontrato durante la creazione di un chatbot
-Dialogflow ES, con le soluzioni testate.
+Every problem we encountered while building a Dialogflow ES chatbot, with
+tested solutions.
 
-## Indice
+## Index
 
 1. `'X' is not a valid intent ID. Must be a UUID`
 2. `can not be passed into JsonElement`
-3. `BadRequestException` durante l'import
-4. `Nothing to import` - ZIP non letto
+3. `BadRequestException` during import
+4. `Nothing to import` - ZIP not read
 5. `Permission 'dialogflow.agents.get' not granted`
-6. Vecchio URL `console.dialogflow.com/api-client/demo/embedded` non funziona
-7. Il bot risponde sempre con il Fallback
-8. Il progetto Google Cloud non appare nella lista
-9. Cartella doppia nello ZIP
-10. Pulsante IMPORT grigio/disabilitato
+6. Old URL `console.dialogflow.com/api-client/demo/embedded` no longer works
+7. Bot always replies with Fallback
+8. Google Cloud project not showing in the list
+9. Nested folder inside the ZIP
+10. IMPORT button grey/disabled
 
 ---
 
 ## 1. `'X' is not a valid intent ID. Must be a UUID`
 
-### Errore
-    Validate intent with display name 'saluto_finale' failed because of the following reasons:
+### Error
+    Validate intent with display name 'goodbye' failed because of the following reasons:
     'intent-017' is not a valid intent ID. Must be a UUID.
 
-### Causa
-Stai usando ID tipo `intent-001` invece di veri **UUID v4**.
+### Cause
+You are using IDs like `intent-001` instead of proper **UUID v4**.
 
-### Soluzione
-Sostituisci:
+### Solution
+Replace:
 
-    "id": f"intent-{counter:03d}",   # SBAGLIATO
+    "id": f"intent-{counter:03d}",   # WRONG
 
-con:
+with:
 
     import uuid
-    "id": str(uuid.uuid4()),         # CORRETTO
+    "id": str(uuid.uuid4()),         # CORRECT
 
 ---
 
 ## 2. `can not be passed into JsonElement`
 
-### Errore
+### Error
     This file 'intents/image_to_gcode_user_says.json' can not be passed into JsonElement.
     Check if this is in valid json format.
 
-### Causa
-Il **nome del file delle training phrases** e sbagliato. Dialogflow ES e
-estremamente pignolo sul nome file.
+### Cause
+The **training phrases filename** is wrong. Dialogflow ES is extremely
+picky about the file name.
 
-### Nomi SBAGLIATI
-- `image_to_gcode_user_says.json` (singolare, senza "it")
-- `image_to_gcode_usersays.json` (manca "_it")
-- `image_to_gcode_user_says_it.json` ("user_says" invece di "usersays")
+### WRONG names
+- `image_to_gcode_user_says.json` (singular, no "it")
+- `image_to_gcode_usersays.json` (missing "_it")
+- `image_to_gcode_user_says_it.json` ("user_says" instead of "usersays")
 
-### Nome CORRETTO
+### CORRECT name
 
-    {nome_intent}_usersays_it.json
+    {intent_name}_usersays_it.json
 
-Esempi corretti:
+Correct examples:
 
     image_to_gcode_usersays_it.json      OK
     svg_to_gcode_usersays_it.json        OK
-    conferma_no_usersays_it.json         OK
+    confirm_no_usersays_it.json          OK
 
-Deve essere tutto attaccato: **usersays** + **_it**.
-
----
-
-## 3. `BadRequestException` durante l'import
-
-### Cause possibili
-- **BOM UTF-8** all'inizio del file
-- **Apostrofi** `'` non gestiti
-- **Emoji** nei testi
-- JSON con virgole doppie o parentesi sbilanciate
-- File troppo grande (> 10 MB)
-
-### Soluzione
-1. Apri con **Notepad++**
-2. Menu **Encoding** -> **UTF-8** (NON "UTF-8 BOM")
-3. Salva
-4. Valida JSON su [jsonlint.com](https://jsonlint.com)
+Must be all attached: **usersays** + **_it**.
 
 ---
 
-## 4. `Nothing to import` - ZIP non letto
+## 3. `BadRequestException` during import
 
-### Cause
-- Cartella doppia nello ZIP (es. `costycnc-bot/costycnc-bot/`)
-- Manca `agent.json` nella root
-- Manca cartella `intents/`
+### Possible causes
+- **UTF-8 BOM** at the beginning of the file
+- **Apostrophes** not properly handled
+- **Emoji** in texts
+- JSON with double commas or unbalanced brackets
+- File too large (over 10 MB)
 
-### Struttura corretta
+### Solution
+1. Open with **Notepad++**
+2. Menu **Encoding** -> **UTF-8** (NOT "UTF-8 BOM")
+3. Save
+4. Validate JSON at jsonlint.com
 
-    costycnc-bot.zip
-    +-- costycnc-bot/         <- UNA SOLA cartella
+---
+
+## 4. `Nothing to import` - ZIP not read
+
+### Causes
+- Nested folder inside the ZIP (e.g. `costycnc-bot/costycnc-bot/`)
+- Missing `agent.json` in the root
+- Missing `intents/` folder
+
+### Correct structure
+
+    dialogflow-es-chatbot.zip
+    +-- costycnc-bot/         <- ONLY ONE folder
         +-- agent.json
         +-- package.json
         +-- intents/
-            +-- saluto.json
-            +-- saluto_usersays_it.json
+            +-- greeting.json
+            +-- greeting_usersays_it.json
 
-### Struttura SBAGLIATA
+### WRONG structure
 
-    costycnc-bot.zip
+    dialogflow-es-chatbot.zip
     +-- costycnc-bot/
-        +-- costycnc-bot/     <- DOPPIA!
+        +-- costycnc-bot/     <- NESTED!
             +-- agent.json
             +-- intents/
 
@@ -114,156 +114,154 @@ Deve essere tutto attaccato: **usersays** + **_it**.
 
 ## 5. `Permission 'dialogflow.agents.get' not granted`
 
-### Errore
+### Error
     com.google.apps.framework.auth.IamPermissionDeniedException:
     Permission 'dialogflow.agents.get' not granted to cloud-ml-dialogflow-frontend@prod.google.com,
     because no ALLOW or ALLOW_WITH_LOG rule includes that permission.
 
-### Causa
-Non hai i permessi IAM sul progetto Google Cloud.
-**Oppure stai lavorando nel progetto Google Cloud SBAGLIATO!**
+### Cause
+You do not have IAM permissions on the Google Cloud project.
+**Or you are working in the WRONG Google Cloud project!**
 
-### Soluzione passo-passo
+### Step-by-step solution
 
-**Passo 1** - Trova il Project ID corretto:
-Dialogflow -> Settings -> **General** -> copia il **Project ID**
+**Step 1** - Find the correct Project ID:
+Dialogflow -> Settings -> **General** -> copy the **Project ID**
 
-**Passo 2** - Vai su [Google Cloud Console](https://console.cloud.google.com)
+**Step 2** - Go to [Google Cloud Console](https://console.cloud.google.com)
 
-**Passo 3** - In alto a sinistra, seleziona il progetto **corretto**
-Se non appare -> vedi problema 8
+**Step 3** - Top left, select the **correct** project
 
-**Passo 4** - Menu -> **IAM e amministrazione** -> **IAM**
+**Step 4** - Menu -> **IAM & Admin** -> **IAM**
 
-**Passo 5** - Trova il tuo indirizzo email -> clicca matita
+**Step 5** - Find your email address -> click the pencil icon
 
-**Passo 6** - Aggiungi ruoli:
+**Step 6** - Add roles:
 - **Dialogflow API Admin**
 - **Dialogflow Console Agent Editor**
-- **Editor** (generico)
+- **Editor** (generic)
 
-**Passo 7** - **SAVE** -> torna in Dialogflow -> ricarica -> riprova
+**Step 7** - **SAVE** -> back to Dialogflow -> reload -> retry
 
 ---
 
-## 6. Vecchio URL `console.dialogflow.com/api-client/demo/embedded` non funziona
+## 6. Old URL `console.dialogflow.com/api-client/demo/embedded` no longer works
 
-### Errore
-    La pagina web all'indirizzo https://console.dialogflow.com/api-client/demo/embedded/...
-    potrebbe essere temporaneamente non disponibile oppure e stata permanentemente
-    spostata a un nuovo indirizzo web.
+### Error
+    The web page at https://console.dialogflow.com/api-client/demo/embedded/...
+    might be temporarily down or it may have moved permanently to a new web address.
 
-### Causa
-Google ha **dismesso** il vecchio servizio "web demo".
+### Cause
+Google has **deprecated** the old "web demo" service.
 
-### Soluzione - Usa Dialogflow Messenger
+### Solution - Use Dialogflow Messenger
 
 1. Dialogflow -> **Integrations** -> **Dialogflow Messenger**
-2. Clicca **ENABLE**
-3. Copia il codice:
+2. Click **ENABLE**
+3. Copy the code:
 
     <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
     <df-messenger
       intent="WELCOME"
       chat-title="CostyCNC"
-      agent-id="IL_TUO_AGENT_ID"
-      language-code="it">
+      agent-id="YOUR_AGENT_ID"
+      language-code="en">
     </df-messenger>
 
-**NON confondere `agent-id` con il Project ID!**
-- `agent-id` = UUID tipo `9378968c-5941-48e8-95e1-8014f7fa02f5`
-- `Project ID` = stringa tipo `costycnc-bot-lxxc`
+**Do NOT confuse `agent-id` with Project ID!**
+- `agent-id` = UUID like `9378968c-5941-48e8-95e1-8014f7fa02f5`
+- `Project ID` = string like `costycnc-bot-lxxc`
 
 ---
 
-## 7. Il bot risponde sempre con il Fallback
+## 7. Bot always replies with Fallback
 
-### Cause
-- Training phrases **non importate**
-- **Soglia ML troppo alta** (default 0.7)
-- Il modello deve **reindicizzare** (1-2 minuti)
+### Causes
+- Training phrases **not imported**
+- **ML threshold too high** (default 0.7)
+- Model needs to **reindex** (1-2 minutes)
 
-### Soluzione
-1. **Verifica training phrases:** apri l'intent -> controlla le frasi
-2. **Clicca SAVE** nell'intent -> forza riaddestramento
-3. **Aspetta 2 minuti**
-4. **Riprova**
-5. Se ancora non funziona -> **abbassa soglia ML:**
+### Solution
+1. **Verify training phrases:** open the intent -> check the phrases
+2. **Click SAVE** in the intent -> forces retraining
+3. **Wait 2 minutes**
+4. **Retry**
+5. If still failing -> **lower ML threshold:**
    Settings -> **ML Settings** -> **Classification threshold** -> `0.4`
 
 ---
 
-## 8. Il progetto Google Cloud non appare nella lista
+## 8. Google Cloud project not showing in the list
 
-### Sintomo
-Nella schermata "Seleziona un progetto" non vedo il progetto `costycnc-bot`.
+### Symptom
+In the "Select a project" screen I cannot see the `costycnc-bot` project.
+
+### Causes
+1. Logged in with a **different Google account**
+2. Project in a **corporate organization** not accessible
+3. Dialogflow agent is a **trial/temporary** without a Cloud project
+4. Project name is **completely different** (e.g. "My First Project")
+
+### Solution
+
+**Check 1** - Verify the account is the same in Dialogflow and Cloud Console
+
+**Check 2** - Find the real Project ID:
+Dialogflow -> Settings -> **General** -> copy the **Project ID**
+
+**Check 3** - Search by ID:
+In the "Select project" screen, type the **exact Project ID** in the search field
+
+### If it still does not appear -> Create a new project
+1. Google Cloud Console
+2. **Select a project** -> **NEW PROJECT**
+3. Name: `costycnc-chatbot`
+4. Create
+5. Back to Dialogflow -> create a new agent selecting this project
+6. Reimport the ZIP
+
+---
+
+## 9. Nested folder inside the ZIP
 
 ### Cause
-1. Loggato con **account Google diverso**
-2. Progetto in **organizzazione aziendale** non accessibile
-3. Agent Dialogflow **trial/temporaneo** senza progetto Cloud
-4. Nome progetto **completamente diverso** (es. "My First Project")
+You ran the Python script **inside** a folder already named like the agent.
 
-### Soluzione
+### Solution
 
-**Verifica 1** - Controlla che l'account sia lo stesso in Dialogflow e Cloud Console
-
-**Verifica 2** - Trova il Project ID reale:
-Dialogflow -> Settings -> **General** -> copia il **Project ID**
-
-**Verifica 3** - Cerca per ID:
-Nella schermata "Seleziona progetto", scrivi il **Project ID esatto** nel campo di ricerca
-
-### Se ancora non appare -> Crea un nuovo progetto
-1. [Google Cloud Console](https://console.cloud.google.com)
-2. **Seleziona un progetto** -> **NUOVO PROGETTO**
-3. Nome: `costycnc-chatbot`
-4. Crea
-5. Torna in Dialogflow -> crea un nuovo agent selezionando questo progetto
-6. Reimporta lo ZIP
-
----
-
-## 9. Cartella doppia nello ZIP
-
-### Causa
-Hai eseguito lo script Python **dentro** una cartella che si chiama gia come l'agent.
-
-### Soluzione
-
-    # SBAGLIATO: esegui dentro costycnc-bot/
+    # WRONG: run inside costycnc-bot/
     cd costycnc-bot/
     python crea_bot.py
-    # -> crea costycnc-bot/costycnc-bot/
+    # -> creates costycnc-bot/costycnc-bot/
 
-    # CORRETTO: esegui da cartella neutra
-    cd /Desktop/lavoro/
+    # CORRECT: run from a neutral folder
+    cd /Desktop/work/
     python crea_bot.py
-    # -> crea lavoro/costycnc-bot/
+    # -> creates work/costycnc-bot/
 
 ---
 
-## 10. Pulsante IMPORT grigio/disabilitato
+## 10. IMPORT button grey/disabled
 
-### Causa
-Hai caricato lo ZIP ma non hai digitato la conferma.
+### Cause
+You uploaded the ZIP but did not type the confirmation.
 
-### Soluzione
-Nel campo di testo scrivi: `IMPORT` (tutto maiuscolo) -> il pulsante diventa cliccabile.
+### Solution
+In the text field type: `IMPORT` (all caps) -> the button becomes clickable.
 
 ---
 
-## Checklist finale prima dell'import
+## Final checklist before import
 
-| # | Verifica | OK? |
-|---|----------|-----|
-| 1 | Tutti gli ID sono UUID v4 | [ ] |
-| 2 | File training si chiamano `{name}_usersays_it.json` | [ ] |
-| 3 | Nessun file `_user_says.json` | [ ] |
-| 4 | ZIP ha una sola cartella radice | [ ] |
-| 5 | `agent.json` presente | [ ] |
-| 6 | File salvati come UTF-8 senza BOM | [ ] |
-| 7 | JSON validati con jsonlint.com | [ ] |
-| 8 | Campo `type` e `"0"` (stringa) | [ ] |
-| 9 | Campi `title`, `textToSpeech`, `condition` presenti | [ ] |
-| 10 | Numero file in `intents/` = 2 x numero intent | [ ] |
+| # | Check | OK? |
+|---|-------|-----|
+| 1 | All IDs are UUID v4 | [ ] |
+| 2 | Training files are named `{name}_usersays_it.json` | [ ] |
+| 3 | No file named `_user_says.json` | [ ] |
+| 4 | ZIP has only one root folder | [ ] |
+| 5 | `agent.json` present | [ ] |
+| 6 | Files saved as UTF-8 without BOM | [ ] |
+| 7 | JSON validated with jsonlint.com | [ ] |
+| 8 | Type field is `"0"` (string) | [ ] |
+| 9 | Fields `title`, `textToSpeech`, `condition` present | [ ] |
+| 10 | Number of files in `intents/` = 2 x number of intents | [ ] |

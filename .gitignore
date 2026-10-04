@@ -7,9 +7,10 @@ __pycache__/
 env/
 venv/
 
-# ZIP generati (non vanno su GitHub)
+# Generated ZIPs (not uploaded to GitHub)
 costycnc-bot/
-costycnc-bot.zip
+dialogflow-es-chatbot.zip
+*.zip
 
 # OS
 .DS_Store

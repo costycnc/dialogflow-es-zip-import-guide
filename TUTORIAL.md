@@ -1,39 +1,39 @@
-# Tutorial: Crea un chatbot con Dialogflow ES
+# Tutorial: Build a chatbot with Dialogflow ES
 
-Guida pratica basata sull'esperienza reale con CostyCNC.
+Practical guide based on real experience with CostyCNC.
 
-## Prima di iniziare
+## Before you start
 
-Leggi **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**! Il formato di importazione
-ZIP di Dialogflow ES ha molte trappole che possono bloccarti per giorni.
+Read **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**! The Dialogflow ES ZIP
+import format has many traps that can block you for days.
 
-## Cosa ti serve
+## What you need
 
-- Account Google (gratis)
-- Accesso a [dialogflow.cloud.google.com](https://dialogflow.cloud.google.com)
-- Python 3.8+ installato
-- 30 minuti
+- Google account (free)
+- Access to [dialogflow.cloud.google.com](https://dialogflow.cloud.google.com)
+- Python 3.8+ installed
+- 30 minutes
 
-## 1. Creare l'agent Dialogflow
+## 1. Create the Dialogflow agent
 
-1. Vai su [dialogflow.cloud.google.com](https://dialogflow.cloud.google.com)
-2. Clicca **"Create Agent"**
-3. Compila:
+1. Go to [dialogflow.cloud.google.com](https://dialogflow.cloud.google.com)
+2. Click **"Create Agent"**
+3. Fill in:
    - **Agent name:** `costycnc-bot`
-   - **Default Language:** Italian (it)
+   - **Default Language:** English (en) or Italian (it)
    - **Time Zone:** Europe/Rome
-4. Clicca **CREATE**
+4. Click **CREATE**
 
-Dopo 30 secondi hai il tuo agent.
+After 30 seconds your agent is ready.
 
-**Importante:** Prendi nota del **Project ID** in Settings -> General.
-Ti servira dopo per l'integrazione web.
+**Important:** Note your **Project ID** in Settings -> General.
+You will need it later for web integration.
 
-## 2. Capire il formato ZIP
+## 2. Understand the ZIP format
 
-Struttura corretta:
+Correct structure:
 
-    costycnc-bot.zip
+    dialogflow-es-chatbot.zip
     +-- costycnc-bot/
         +-- agent.json
         +-- package.json
@@ -41,67 +41,67 @@ Struttura corretta:
             +-- {name}.json
             +-- {name}_usersays_it.json
 
-### Regole d'oro
+### Golden rules
 
-| Regola | Valore corretto | Valore SBAGLIATO |
-|--------|----------------|------------------|
-| Nome file training | `{name}_usersays_it.json` | `{name}_user_says.json` |
-| ID intent | UUID v4 | `intent-001` |
-| Campo `type` | `"0"` (stringa) | `0` (numero) |
-| Encoding | UTF-8 senza BOM | UTF-8-BOM |
+| Rule | Correct value | WRONG value |
+|------|---------------|-------------|
+| Training file name | `{name}_usersays_it.json` | `{name}_user_says.json` |
+| Intent ID | UUID v4 | `intent-001` |
+| Type field | `"0"` (string) | `0` (number) |
+| Encoding | UTF-8 without BOM | UTF-8-BOM |
 
-## 3. Generare lo ZIP
+## 3. Generate the ZIP
 
-Lo script `crea_bot.py` fa tutto automaticamente:
+The `crea_bot.py` script does everything automatically:
 
     python crea_bot.py
 
-Output: `costycnc-bot.zip`
+Output: `dialogflow-es-chatbot.zip`
 
-**Esegui lo script da una cartella neutra** (es. Desktop),
-NON dentro una cartella che si chiama gia `costycnc-bot`,
-altrimenti crea una **cartella doppia** dentro lo ZIP.
+**Run the script from a neutral folder** (e.g. Desktop),
+NOT inside a folder already named `costycnc-bot`,
+otherwise it creates a **nested folder** inside the ZIP.
 
-## 4. Importare in Dialogflow
+## 4. Import into Dialogflow
 
 1. Settings -> **Export and Import**
-2. Clicca **RESTORE FROM ZIP**
-3. Carica `costycnc-bot.zip`
-4. Digita `IMPORT` nel campo di testo
-5. Clicca **IMPORT**
+2. Click **RESTORE FROM ZIP**
+3. Upload `dialogflow-es-chatbot.zip`
+4. Type `IMPORT` in the text field
+5. Click **IMPORT**
 
-Se vedi **"Agent import successful"** -> HAI FATTO!
+If you see **"Agent import successful"** -> DONE!
 
-## 5. Testare il bot
+## 5. Test the bot
 
-1. Pannello destro -> **"Try it now"**
-2. Scrivi: `ciao`
-3. Dovresti vedere la risposta del bot
+1. Right panel -> **"Try it now"**
+2. Type: `hello`
+3. You should see the bot response
 
-Se risponde col Fallback -> vedi **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
+If it replies with Fallback -> see **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)**
 
-## 6. Integrare nel sito
+## 6. Integrate into your website
 
-### Dialogflow Messenger (raccomandato)
+### Dialogflow Messenger (recommended)
 
 1. Dialogflow -> **Integrations** -> **Dialogflow Messenger**
-2. Clicca **ENABLE** (se da errore -> [TROUBLESHOOTING.md](TROUBLESHOOTING.md))
-3. Copia il codice:
+2. Click **ENABLE** (if error -> [TROUBLESHOOTING.md](TROUBLESHOOTING.md))
+3. Copy the code:
 
     <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
     <df-messenger
       intent="WELCOME"
       chat-title="CostyCNC"
-      agent-id="IL_TUO_AGENT_ID"
-      language-code="it">
+      agent-id="YOUR_AGENT_ID"
+      language-code="en">
     </df-messenger>
 
-**NON usare il vecchio URL** `console.dialogflow.com/api-client/demo/embedded/...`!
-E dismesso.
+**DO NOT use the old URL** `console.dialogflow.com/api-client/demo/embedded/...`!
+It is deprecated.
 
-## 7. Consigli finali
+## 7. Final tips
 
-- Esporta regolarmente un backup (Settings -> EXPORT AS ZIP)
-- Controlla il pannello "Training" ogni settimana
-- Aggiungi le frasi non riconosciute alle intent esistenti
-- Abbassa la soglia ML a 0.4 in Settings -> ML Settings
+- Regularly export a backup (Settings -> EXPORT AS ZIP)
+- Check the "Training" panel every week
+- Add unrecognized phrases to existing intents
+- Lower the ML threshold to 0.4 in Settings -> ML Settings
