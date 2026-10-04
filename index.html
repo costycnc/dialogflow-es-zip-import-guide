@@ -542,6 +542,92 @@ Type exactly <strong>IMPORT</strong> - no spaces, no lowercase.
   <tr><td>10</td><td>Number of files in <code>intents/</code> = 2 x number of intents</td><td>[ ]</td></tr>
 </table>
 
+ <h2>Extra Tips (from field experience)</h2>
+
+<div class="intro">
+  These tips are <strong>additional</strong> to the 10 problems above.
+  The guide works perfectly without them, but they can save you extra time.
+</div>
+
+<h3>1. Language suffix must match your agent</h3>
+<p>
+  The guide uses <code>_it</code> because the example agent is in Italian.
+  If your agent is in English, the files must be named
+  <code>{name}_usersays_en.json</code>. The suffix is the
+  <strong>language code of the agent</strong>, not a fixed value.
+</p>
+<div class="fix">
+Always check the agent language in <strong>Settings &rarr; General</strong>
+before generating the ZIP.
+</div>
+
+<h3>2. Keep a "known good" ZIP as reference</h3>
+<p>
+  Before modifying the Python script or the JSON files, export a working
+  agent from Dialogflow (<strong>Settings &rarr; Export and Import &rarr; EXPORT AS ZIP</strong>).
+  That ZIP is the <strong>official reference format</strong>.
+</p>
+<div class="fix">
+Compare your generated ZIP with the exported one. The structure must be
+identical. This is the fastest way to spot naming or field differences.
+</div>
+
+<h3>3. UUIDs must be unique, not just valid</h3>
+<p>
+  A common mistake is to generate one UUID and reuse it everywhere.
+  Dialogflow accepts it during import but the agent will behave
+  unpredictably.
+</p>
+<div class="fix">
+Every <code>id</code> field must come from a <strong>separate</strong>
+<code>str(uuid.uuid4())</code> call. Never reuse.
+</div>
+
+<h3>4. IAM roles: prefer least privilege</h3>
+<p>
+  The guide suggests adding <strong>Editor</strong> (generic) to fix
+  Problem 5. It works, but it is broader than needed.
+</p>
+<div class="fix">
+For a cleaner setup, use only:
+<strong>Dialogflow API Admin</strong> +
+<strong>Dialogflow Console Agent Editor</strong>.
+Add <strong>Editor</strong> only if strictly necessary.
+</div>
+
+<h3>5. Test the import on a throwaway agent first</h3>
+<p>
+  Importing a ZIP <strong>overwrites</strong> the current agent content.
+  If something is wrong, you lose the existing intents.
+</p>
+<div class="fix">
+Create a temporary empty agent, import there first, verify everything
+works, then import into the real agent.
+</div>
+
+<h3>6. The "Last updated" date matters</h3>
+<p>
+  Dialogflow ES is a mature product but Google still changes IAM behavior,
+  deprecates URLs (see Problem 6) and updates the console UI.
+</p>
+<div class="fix">
+If a step does not match what you see, check the
+<a href="https://cloud.google.com/dialogflow/es/docs" target="_blank">official Dialogflow ES docs</a>
+for recent changes before assuming the guide is wrong.
+</div>
+
+<h3>7. Watch out for invisible characters in JSON</h3>
+<p>
+  Problem 3 mentions BOM, but other invisible issues exist:
+  non-breaking spaces (<code>\u00A0</code>), smart quotes
+  (<code>“ ” ‘ ’</code>) copied from Word or web pages, and
+  zero-width spaces.
+</p>
+<div class="fix">
+Always type JSON strings manually or paste through a plain-text editor.
+Never copy from Word, Google Docs or rendered HTML.
+</div>
+
 <h2>Need more help?</h2>
 
 <p>
